@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enhanced Todo List</title>
+    <title>Todo List</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
     <style>
         * {
@@ -12,51 +12,57 @@
             box-sizing: border-box;
         }
 
+        html, body {
+            height: 100%;
+            overflow-x: hidden;
+        }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-attachment: fixed;
             min-height: 100vh;
-            padding: 20px;
         }
 
         .container {
-            max-width: 800px;
-            margin: 0 auto;
+            width: 100%;
+            height: 100vh;
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(20px);
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
             overflow: hidden;
         }
 
         .header {
             background: linear-gradient(135deg, #667eea, #764ba2);
-            padding: 30px;
+            padding: 20px 30px;
             text-align: center;
             color: white;
+            flex-shrink: 0;
         }
 
         .header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
+            font-size: 2.2rem;
+            margin-bottom: 5px;
             font-weight: 700;
         }
 
-        .header p {
-            opacity: 0.9;
-            font-size: 1.1rem;
-        }
-
         .content {
-            padding: 30px;
+            flex: 1;
+            padding: 20px 30px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
         }
 
         .add-todo-section {
             background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
             border-radius: 15px;
-            padding: 25px;
-            margin-bottom: 30px;
+            padding: 20px;
+            margin-bottom: 20px;
             box-shadow: 0 10px 25px rgba(240, 147, 251, 0.3);
+            flex-shrink: 0;
         }
 
         .add-todo-form {
@@ -67,7 +73,7 @@
 
         .todo-input {
             flex: 1;
-            padding: 15px 20px;
+            padding: 12px 20px;
             border: none;
             border-radius: 50px;
             font-size: 1rem;
@@ -84,7 +90,7 @@
         }
 
         .add-btn {
-            padding: 15px 25px;
+            padding: 12px 20px;
             background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
             color: white;
             border: none;
@@ -102,20 +108,21 @@
 
         .controls {
             display: flex;
-            gap: 20px;
-            margin-bottom: 30px;
+            gap: 15px;
+            margin-bottom: 20px;
             flex-wrap: wrap;
             align-items: center;
+            flex-shrink: 0;
         }
 
         .filter-buttons {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             flex-wrap: wrap;
         }
 
         .filter-btn {
-            padding: 10px 20px;
+            padding: 8px 16px;
             border: none;
             border-radius: 25px;
             cursor: pointer;
@@ -123,6 +130,7 @@
             transition: all 0.3s ease;
             background: #f8f9fa;
             color: #6c757d;
+            font-size: 0.9rem;
         }
 
         .filter-btn.active {
@@ -138,17 +146,18 @@
 
         .search-container {
             flex: 1;
-            min-width: 250px;
+            min-width: 200px;
             position: relative;
         }
 
         .search-input {
             width: 100%;
-            padding: 12px 20px 12px 45px;
+            padding: 10px 15px 10px 40px;
             border: 2px solid #e9ecef;
             border-radius: 25px;
             outline: none;
             transition: all 0.3s ease;
+            font-size: 0.9rem;
         }
 
         .search-input:focus {
@@ -158,33 +167,57 @@
 
         .search-icon {
             position: absolute;
-            left: 15px;
+            left: 12px;
             top: 50%;
             transform: translateY(-50%);
             color: #6c757d;
         }
 
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
         .todo-list {
-            min-height: 200px;
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 5px;
+            margin-bottom: 15px;
+        }
+
+        .todo-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .todo-list::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.1);
+            border-radius: 10px;
+        }
+
+        .todo-list::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 10px;
         }
 
         .todo-item {
             background: white;
-            border-radius: 15px;
-            margin-bottom: 15px;
-            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            padding: 15px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
             border-left: 4px solid #667eea;
             transition: all 0.3s ease;
             cursor: grab;
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 12px;
         }
 
         .todo-item:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
         }
 
         .todo-item.completed {
@@ -194,7 +227,7 @@
 
         .todo-item.sortable-ghost {
             opacity: 0.5;
-            transform: rotate(3deg);
+            transform: rotate(2deg);
         }
 
         .todo-item.sortable-chosen {
@@ -204,17 +237,31 @@
         .drag-handle {
             color: #6c757d;
             cursor: grab;
-            padding: 5px;
+            padding: 3px;
+            transition: all 0.3s ease;
+            opacity: 1;
+            user-select: none;
+            font-size: 1.1em;
+        }
+
+        .drag-handle:hover {
+            color: #495057;
+            transform: scale(1.1);
+        }
+
+        .drag-handle:active {
+            cursor: grabbing;
         }
 
         .todo-checkbox {
-            width: 20px;
-            height: 20px;
+            width: 18px;
+            height: 18px;
             border-radius: 50%;
             border: 2px solid #667eea;
             cursor: pointer;
             position: relative;
             transition: all 0.3s ease;
+            flex-shrink: 0;
         }
 
         .todo-checkbox.checked {
@@ -230,20 +277,22 @@
             transform: translate(-50%, -50%);
             color: white;
             font-weight: bold;
-            font-size: 12px;
+            font-size: 11px;
         }
 
         .todo-content {
             flex: 1;
             display: flex;
             flex-direction: column;
-            gap: 5px;
+            gap: 3px;
+            min-width: 0;
         }
 
         .todo-text {
-            font-size: 1.1rem;
+            font-size: 1rem;
             color: #333;
             transition: all 0.3s ease;
+            word-wrap: break-word;
         }
 
         .todo-text.completed {
@@ -258,10 +307,10 @@
         .todo-edit-input {
             display: none;
             flex: 1;
-            padding: 8px 12px;
+            padding: 6px 10px;
             border: 2px solid #667eea;
-            border-radius: 8px;
-            font-size: 1.1rem;
+            border-radius: 6px;
+            font-size: 1rem;
             outline: none;
         }
 
@@ -270,21 +319,22 @@
         }
 
         .todo-timestamp {
-            font-size: 0.85rem;
+            font-size: 0.75rem;
             color: #6c757d;
         }
 
         .todo-actions {
             display: flex;
-            gap: 10px;
+            gap: 6px;
+            flex-shrink: 0;
         }
 
         .action-btn {
-            padding: 8px 12px;
+            padding: 6px 10px;
             border: none;
-            border-radius: 8px;
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             transition: all 0.3s ease;
             color: white;
             font-weight: 500;
@@ -311,81 +361,97 @@
         }
 
         .action-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transform: translateY(-1px);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
         }
 
         .empty-state {
             text-align: center;
-            padding: 60px 20px;
+            padding: 40px 20px;
             color: #6c757d;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
 
         .empty-state-icon {
-            font-size: 4rem;
-            margin-bottom: 20px;
+            font-size: 3rem;
+            margin-bottom: 15px;
             opacity: 0.5;
         }
 
         .empty-state h3 {
-            font-size: 1.5rem;
-            margin-bottom: 10px;
+            font-size: 1.3rem;
+            margin-bottom: 8px;
             color: #495057;
         }
 
         .stats {
             background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
-            padding: 20px;
-            border-radius: 15px;
-            margin-top: 30px;
+            padding: 15px;
+            border-radius: 12px;
             text-align: center;
+            flex-shrink: 0;
+        }
+
+        .stats h3 {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
         }
 
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 20px;
-            margin-top: 15px;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: 15px;
         }
 
         .stat-item {
             background: rgba(255, 255, 255, 0.1);
-            padding: 15px;
-            border-radius: 10px;
+            padding: 12px;
+            border-radius: 8px;
             backdrop-filter: blur(10px);
         }
 
         .stat-number {
-            font-size: 2rem;
+            font-size: 1.5rem;
             font-weight: bold;
-            margin-bottom: 5px;
+            margin-bottom: 3px;
         }
 
         .stat-label {
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             opacity: 0.9;
         }
 
         .error-message {
             background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
             color: #721c24;
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 20px;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
             display: none;
+            font-size: 0.9rem;
         }
 
         @media (max-width: 768px) {
-            .container {
-                margin: 0;
-                border-radius: 0;
-                min-height: 100vh;
+            .content {
+                padding: 15px 20px;
+            }
+
+            .header {
+                padding: 15px 20px;
+            }
+
+            .header h1 {
+                font-size: 1.8rem;
             }
 
             .add-todo-form {
                 flex-direction: column;
-                gap: 15px;
+                gap: 12px;
             }
 
             .todo-input {
@@ -395,6 +461,7 @@
             .controls {
                 flex-direction: column;
                 align-items: stretch;
+                gap: 12px;
             }
 
             .filter-buttons {
@@ -402,12 +469,45 @@
             }
 
             .todo-item {
-                padding: 15px;
+                padding: 12px;
             }
 
             .todo-actions {
                 flex-direction: column;
+                gap: 5px;
+            }
+
+            .action-btn {
+                font-size: 0.75rem;
+                padding: 5px 8px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .content {
+                padding: 10px 15px;
+            }
+
+            .header {
+                padding: 12px 15px;
+            }
+
+            .header h1 {
+                font-size: 1.6rem;
+            }
+
+            .todo-item {
+                padding: 10px;
                 gap: 8px;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 8px;
+            }
+
+            .stat-item {
+                padding: 8px;
             }
         }
     </style>
@@ -415,8 +515,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>✨ Todo List</h1>
-            <p>Kelola tugas dengan mudah dan efisien</p>
+            <h1>✨Todo List</h1>
         </div>
 
         <div class="content">
@@ -444,24 +543,26 @@
                 </div>
             </div>
 
-            <div class="todo-list" id="todoList">
-                <!-- Todo items will be inserted here -->
-            </div>
+            <div class="main-content">
+                <div class="todo-list" id="todoList">
+                    <!-- Todo items will be inserted here -->
+                </div>
 
-            <div class="stats">
-                <h3>📊 Statistik</h3>
-                <div class="stats-grid">
-                    <div class="stat-item">
-                        <div class="stat-number" id="totalTodos">0</div>
-                        <div class="stat-label">Total</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-number" id="completedTodos">0</div>
-                        <div class="stat-label">Selesai</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-number" id="pendingTodos">0</div>
-                        <div class="stat-label">Belum Selesai</div>
+                <div class="stats">
+                    <h3>📊 Statistik</h3>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-number" id="totalTodos">0</div>
+                            <div class="stat-label">Total</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" id="completedTodos">0</div>
+                            <div class="stat-label">Selesai</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" id="pendingTodos">0</div>
+                            <div class="stat-label">Belum Selesai</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -475,6 +576,7 @@
                 this.currentFilter = 'all';
                 this.currentSearch = '';
                 this.editingId = null;
+                this.sortable = null;
                 
                 this.init();
             }
@@ -507,11 +609,15 @@
 
             initSortable() {
                 const todoList = document.getElementById('todoList');
+                if (this.sortable) {
+                    this.sortable.destroy();
+                }
                 this.sortable = Sortable.create(todoList, {
-                    animation: 200,
+                    animation: 300,
                     ghostClass: 'sortable-ghost',
                     chosenClass: 'sortable-chosen',
                     handle: '.drag-handle',
+                    disabled: false,
                     onEnd: (evt) => {
                         this.reorderTodos(evt.oldIndex, evt.newIndex);
                     }
@@ -599,15 +705,27 @@
             }
 
             reorderTodos(oldIndex, newIndex) {
+                if (oldIndex === newIndex) return;
+                
                 const filteredTodos = this.getFilteredTodos();
-                const [movedTodo] = filteredTodos.splice(oldIndex, 1);
-                filteredTodos.splice(newIndex, 0, movedTodo);
+                const movedTodo = filteredTodos[oldIndex];
+                
+                // Find the actual todos and reorder them
+                const allTodos = [...this.todos];
+                const movedTodoIndex = allTodos.findIndex(t => t.id === movedTodo.id);
+                const targetTodo = filteredTodos[newIndex];
+                const targetTodoIndex = allTodos.findIndex(t => t.id === targetTodo.id);
+                
+                // Remove moved todo and insert at new position
+                allTodos.splice(movedTodoIndex, 1);
+                allTodos.splice(targetTodoIndex, 0, movedTodo);
                 
                 // Update orders
-                filteredTodos.forEach((todo, index) => {
+                allTodos.forEach((todo, index) => {
                     todo.order = index;
                 });
-
+                
+                this.todos = allTodos;
                 this.saveTodos();
                 this.render();
             }
@@ -665,6 +783,11 @@
                 } else {
                     todoList.innerHTML = filteredTodos.map(todo => this.renderTodoItem(todo)).join('');
                     this.bindTodoEvents();
+                    
+                    // Re-initialize sortable after render
+                    setTimeout(() => {
+                        this.initSortable();
+                    }, 10);
                 }
 
                 this.updateStats();
@@ -672,7 +795,13 @@
 
             renderTodoItem(todo) {
                 const isEditing = this.editingId === todo.id;
-                const createdDate = new Date(todo.createdAt).toLocaleString('id-ID');
+                const createdDate = new Date(todo.createdAt).toLocaleString('id-ID', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
                 
                 return `
                     <div class="todo-item ${todo.completed ? 'completed' : ''}" data-id="${todo.id}">
